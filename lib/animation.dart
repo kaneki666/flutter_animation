@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AnimationDart extends StatefulWidget {
@@ -9,7 +10,7 @@ class AnimationDart extends StatefulWidget {
 class _AnimationState extends State<AnimationDart>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 5),
+    duration: const Duration(seconds: 12),
     vsync: this,
   );
 
@@ -24,6 +25,14 @@ class _AnimationState extends State<AnimationDart>
     ),
   );
 
+  late Animation<Color?> color =
+      ColorTween(begin: Colors.amber, end: Colors.red).animate(
+    CurvedAnimation(
+      parent: _controller,
+      curve: Interval(0.1, 0.5, curve: Curves.linear),
+    ),
+  );
+
   late final Animation<double> borderRadius =
       Tween(begin: 0.0, end: 60.0).animate(
     CurvedAnimation(
@@ -35,21 +44,58 @@ class _AnimationState extends State<AnimationDart>
       ),
     ),
   );
-  late Animation<Color?> color =
-      ColorTween(begin: Colors.amber, end: Colors.red).animate(
-    CurvedAnimation(
-      parent: _controller,
-      curve: Interval(0.2, 0.5, curve: Curves.linear),
-    ),
-  );
 
-  late Animation<double> sizeNew = Tween(begin: 1.0, end: 2.0).animate(
+  late Animation<double> width = Tween(begin: 120.0, end: 420.0).animate(
     CurvedAnimation(
       parent: _controller,
       curve: Interval(
         0.5,
         0.7,
-        curve: Curves.bounceIn,
+        curve: Curves.easeInCirc,
+      ),
+    ),
+  );
+
+  late Animation<double> height = Tween(begin: 120.0, end: 800.0).animate(
+    CurvedAnimation(
+      parent: _controller,
+      curve: Interval(
+        0.5,
+        0.7,
+        curve: Curves.easeInCirc,
+      ),
+    ),
+  );
+
+  late Animation<double> rotate = Tween(begin: 0.0, end: pi).animate(
+    CurvedAnimation(
+      parent: _controller,
+      curve: Interval(
+        0.7,
+        0.8,
+        curve: Curves.ease,
+      ),
+    ),
+  );
+
+  late Animation<double> scale = Tween(begin: 1.0, end: 0.5).animate(
+    CurvedAnimation(
+      parent: _controller,
+      curve: Interval(
+        0.7,
+        0.9,
+        curve: Curves.ease,
+      ),
+    ),
+  );
+
+  late Animation<double> translate = Tween(begin: 0.0, end: 40.0).animate(
+    CurvedAnimation(
+      parent: _controller,
+      curve: Interval(
+        0.9,
+        1.0,
+        curve: Curves.ease,
       ),
     ),
   );
@@ -73,13 +119,22 @@ class _AnimationState extends State<AnimationDart>
       builder: (context, child) => Center(
         child: Opacity(
           opacity: opacity.value,
-          child: Container(
-            alignment: Alignment.center,
-            height: 120.0 * sizeNew.value,
-            width: 120 * sizeNew.value,
-            decoration: BoxDecoration(
-              color: color.value,
-              borderRadius: BorderRadius.circular(borderRadius.value),
+          child: Transform.scale(
+            scale: scale.value,
+            child: Transform.translate(
+              offset: Offset(translate.value, translate.value),
+              child: Transform.rotate(
+                angle: rotate.value,
+                child: Container(
+                  alignment: Alignment.center,
+                  height: height.value,
+                  width: width.value,
+                  decoration: BoxDecoration(
+                    color: color.value,
+                    borderRadius: BorderRadius.circular(borderRadius.value),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
